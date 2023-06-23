@@ -2,3 +2,4 @@
 voices.json
 output.wav
 chats/
+__pycache__

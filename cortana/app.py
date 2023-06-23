@@ -24,24 +24,26 @@ def check_for_hotword_or_hotword_corrections(text: str) -> str:
     if hotword != SKIP and hotword.lower() in text.lower():
         return text
     hotword_corrections = [
-        hotword.strip()
-        for hotword
-        in os.environ.get('ASSISTANT_NAME_CORRECTIONS', '').split(',')
+        hotword.strip() for hotword in os.environ.get(
+            'ASSISTANT_NAME_CORRECTIONS', '').split(',')
     ]
     if hotword_corrections and len(hotword_corrections) > 0:
         for hotword_correction in hotword_corrections:
             if hotword_correction.lower() in text.lower():
-                text = re.sub(hotword_correction, hotword, text, flags=re.IGNORECASE)
+                text = re.sub(hotword_correction,
+                              hotword,
+                              text,
+                              flags=re.IGNORECASE)
                 return text
     if hotword == SKIP:
         return text
-    
+
     raise ValueError('Hotword not found')
 
 
 def full_pipeline(with_tts: bool = True):
     message_list = create_message_list_with_prompt()
-    if not (chat_folder:=Path('chats')).exists():
+    if not (chat_folder := Path('chats')).exists():
         chat_folder.mkdir()
     chat_file_name = f"chats/{time.time()}-{uuid4().hex}.json"
     chat_file = Path(chat_file_name)
