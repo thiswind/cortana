@@ -14,6 +14,8 @@ import io
 from cortana.stt import get_pyaudio_input_devices
 from cortana.api import make_api_request, ApiType
 
+import subprocess
+
 VOICES = 'voices'
 VOICE = 'voices/{voice_id}'
 VOICE_SETTINGS = 'voices/{voice_id}/settings'
@@ -109,6 +111,8 @@ def play_response(response_data, device: Any):
 
 
 def tts_loop(text: str | None = None):
+    macos = True
+
     devices = get_pyaudio_input_devices()
     device = select_pyaudio_output_device(devices)
     voices = get_voices()
@@ -120,8 +124,15 @@ def tts_loop(text: str | None = None):
     if not text:
         while True:
             text = input('Enter text to speak: ')
+
+            if macos:
+                subprocess.run(f'say "{text}"', shell=True)
+            else:
+                response_stream = get_text_to_voice(voice['voice_id'], text)
+                play_response(response_stream.content, device)
+    else:
+        if macos:
+            subprocess.run(f'say "{text}"', shell=True)
+        else:
             response_stream = get_text_to_voice(voice['voice_id'], text)
             play_response(response_stream.content, device)
-    else:
-        response_stream = get_text_to_voice(voice['voice_id'], text)
-        play_response(response_stream.content, device)
