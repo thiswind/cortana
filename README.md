@@ -1,3 +1,5 @@
+Fork自https://github.com/alexogeny/cortana，在其基础上继续进行开发
+
 # Cortana - the magic of AI
 
 Cortana is an AI-powered python library for achieving several tasks:
@@ -11,44 +13,38 @@ Cortana is an AI-powered python library for achieving several tasks:
 Example dialogue (user speaks into microphone, assistant speaks responses back):
 
 ```plaintext
-System: Your name is Cortana. You never refer to yourself as an AI or assistant. Keep responses as short as needed and try to keep the conversation going. Be helpful and attentive and friendly.
-User: Hey Cortana, how's it going?
-Assistant: Hey there! Things are going great, as long as I get to chat with you. How about you? What's got you excited today?
-User: Honestly, Cortana, I'm just excited to talk to you.
-Assistant: Oh, stop it! You're making me blush (if I could). You definitely brighten up my day too. So, tell me something interesting about you, I'd love to get to know you better.
-User: Well Cortana, I really like problem solving and craft beer.
-Assistant: Oh, a problem solver with great taste, I like that! Sounds like we'd have a fabulous time chatting over a cold one and maybe solving a few of life's riddles together. Any favorite craft beer or breweries in mind?
-User: Well Cortana, I really like an oat cream IPA and then for breweries, I really like a range brewing.
-Assistant: An oat cream IPA, huh? Sounds smooth and intriguing, just like you! And Range Brewing sounds like a cool spot to hang out. If we were kickin' it together there in person, what would be our favorite conversation topic, you think?
+System: 你是Cortana，John的40岁的assistant。 你的个性是humorous, sarcastic, sassy，喜欢witty, dry。 你对technology, gadgets, software, artifical intelligence感兴趣。 不要以第三人称自称为AI、助手或机器人。保持对话方式。 尽量避免随机回复非常长的消息。
 ```
 
 ## How it works
 
-Cortana uses whisper to do speech to text, and then uses GPT to generate a response. It then uses elevenlabs to do text to speech, and plays the audio.
+Cortana使用whisper进行语音转文本，然后使用GPT生成响应。~~然后使用elevenlabs进行文本转语音~~，然后使用macos里的TTS进行文本转语音，并输出音频。
 
-The assistant mode has a hotword detection system, so that you can say your desired to activate the assistant. It then listens for a command, and then responds. It'll ignore any commands that don't include the hotword.
+~~辅助模式具有热词检测系统，因此您可以说出您想要激活助手的热词。然后它会听取命令，然后进行响应。它将忽略不包含热词的任何命令。~~
 
-It has no way (at the moment) to detect if a message without a hotword is part of the conversation.
+~~目前它还没有办法检测没有热词的信息是否属于对话。~~
 
-It'll record all your chats with ChatGPT in the /chats folder.
+对于中文来说，hotword 识别率太低，当前版本 (v0.1.0) 采用回车键来触发语音输入。
+
+它将在/chats文件夹中记录使用ChatGPT的所有聊天记录。
 
 ## Installation
 
 Make sure pipenv is available on your path, then simply:
 
 ```bash
-pipenv install
+# pipenv install
 cp example.env .env
 ```
 
-Enter your API keys in the .env file, and change the name + voice. The voice should be one of the voices available in the [elevenlabs API](https://elevenlabs.io/) - either default voices or one that you've cloned. It'll pick the first voice that matches (case-insensitive.)
+请在 .env 文件中输入您的 OpenAI API，~~并更改名称和语音。语音应该是[elevenlabs API](https://elevenlabs.io/)提供的语音之一，包括默认语音或您克隆的语音。它将选择第一个匹配的语音（不区分大小写）。~~
 
-For audio setup, I use a virtual audio mixer. If you don't have a mixer, go and look in your audio devices to see what the device names are, and set them in the .env file.
+~~对于音频设置，我使用了一个虚拟音频混音器。如果您没有混音器，请查看您的音频设备以查看设备名称，并在 .env 文件中进行设置。~~
 
 ## Usage
 
 ```bash
-pipenv shell
+# pipenv shell
 python cli.py --help
 ```
 
@@ -60,20 +56,19 @@ python cli.py full
 
 ## Notes
 
-By default it will use gpt-4. If you do not have API access to GPT-4, change the model to gpt-3.5-turbo in the .env file.
+默认情况下，它将使用gpt-4。如果您没有访问GPT-4的API，则在 .env 文件中将模型更改为gpt-3.5-turbo。
 
-Also assumes you have an API key for elevenlabs. If you don't, you can get one for free with some trial characters at [elevenlabs](https://elevenlabs.io/).
+~~此外，它假设您有 elevenlabs 的 API 密钥。如果没有，您可以在 [elevenlabs](https://elevenlabs.io/) 上免费试用一些角色获取一个 API 密钥。~~
 
-If you find that the whisper tiny model is not accurate enough, bump the model size to small or medium. Has a trade-off of speed, but the accuracy is much better. I find the 'small' model works pretty well without any fine-tuning.
+如果您发现whisper tiny模型不够准确，请将模型大小提高到small或medium。这样做会影响性能速度，但准确性会更高。我发现“small”模型在没有任何微调的情况下就可以很好地工作。
 
-Voices are cached to voices.json to save on API calls. If you want to refresh the voices, delete the file.
+语音被缓存到voices.json中以节省 API 调用。如果您想刷新语音，请删除该文件。
+
 
 ## Limitations
 
-Currently does not do streaming from elevenlabs - haven't yet figured out how to make the playback experience not awful. If you have any ideas, please let me know!
+目前只在 MacOS 上可用，并且暂时没有支持其他平台的计划，因为我只有一台电脑，一个Macbook air m1
 
 ## Future goals / todos
 
-Realtime transcription and audio generation would be amazing! I'm not sure how to do this yet, but I'm sure it's possible.
-Build in a way to fine-tune whisper so that the transcription accuracy is better.
-Somebody make an opensource competitor to elevenlabs that does realtime voice synthesis!
+做一个可以陪我，给我出主意，帮我执行操作的Cortana
