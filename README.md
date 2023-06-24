@@ -43,6 +43,8 @@ cp example.env .env
 
 ## Usage
 
+不要在IDE里运行，而是要在macos的默认终端里运行，否则收不到语音输入
+
 ```bash
 # pipenv shell
 python cli.py --help
