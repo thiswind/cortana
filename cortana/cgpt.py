@@ -2,15 +2,18 @@
 Module for interacting with chatgpt api
 """
 from dotenv import load_dotenv
+
 load_dotenv(override=True)
-import os
-from uuid import uuid4
-from pathlib import Path
-import time
 import json
+import os
+import time
+from pathlib import Path
 from typing import List, Literal, NoReturn, TypedDict
+from uuid import uuid4
+
 CHAT_COMPLETION = "chat/completions"
-from cortana.api import make_api_request, ApiType
+from cortana.api import ApiType, make_api_request
+
 MAX_TOKENS: int = int(os.environ.get('OPENAI_CHATGPT_MAX_TOKENS', 50)) * 4
 
 
@@ -73,12 +76,22 @@ def create_chat_gpt_prompt():
     role = os.environ.get('ASSISTANT_ROLE', 'assistant')
     age = os.environ.get('ASSISTANT_AGE', '35')
     topic = os.environ.get('ASSISTANT_TOPIC_FOCUS', 'general')
-    return ''.join((
+
+    template_en = ''.join((
         f"You are {name}, {user_name}'s {age} year old {role}. ",
         f"Your personality is {personality} and your humor is {humor}. ",
         f"Your interests are {topic}. ",
         "Never refer to yourself in the third person, as an AI, assistant, or bot. Be conversational. ",
         "Try not to randomly respond with very long messages."))
+
+    template_cn = ''.join((
+        f"你是{name}，{user_name}的{age}岁的{role}。 ",
+        f"你的个性是{personality}，幽默感是{humor}。 ",
+        f"你对{topic}感兴趣。 ",
+        "不要以第三人称自称为AI、助手或机器人。保持对话式的交流方式。 ",
+        "尽量避免随机回复非常长的消息。"))
+
+    return template_cn
 
 
 def create_message_list_with_prompt(

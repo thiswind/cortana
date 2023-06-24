@@ -5,13 +5,16 @@ The full pipeline that runs:
     3. Text to speech
 """
 from dotenv import load_dotenv
+
 load_dotenv(override=True)
-import os
-from uuid import uuid4
-from pathlib import Path
 import json
-import time
+import os
 import re
+import time
+from pathlib import Path
+from pdb import set_trace
+from uuid import uuid4
+
 from cortana.cgpt import create_message_list_with_prompt, pluggable_chat_loop
 from cortana.stt import stt_loop
 from cortana.tts import tts_loop
@@ -51,10 +54,14 @@ def full_pipeline(with_tts: bool = True):
         f.write(json.dumps(message_list, indent=2))
 
     while True:
+        input("按下回车键继续...")
+        
         text = stt_loop()
 
+        # set_trace()
+
         try:
-            text = check_for_hotword_or_hotword_corrections(text)
+            # text = check_for_hotword_or_hotword_corrections(text)
             response = pluggable_chat_loop(message_list, text)
             if with_tts:
                 tts_loop(response[-1]['content'])
@@ -63,8 +70,11 @@ def full_pipeline(with_tts: bool = True):
 
             with open(chat_file, 'w') as f:
                 f.write(json.dumps(message_list, indent=2))
-        except ValueError:
-            pass
+        except ValueError as ex:
+            print(ex)
+
+        if text in ['再见', '再見']:
+            break
 
 
 def clone_pipeline():

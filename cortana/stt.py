@@ -2,13 +2,15 @@
 Module that records text and turns it into speech.
 """
 from dotenv import load_dotenv
+
 load_dotenv(override=True)
-from typing import Any
-import whisper  # type: ignore
 import os
-import pyaudio
-import numpy as np
 import wave
+from typing import Any
+
+import numpy as np
+import pyaudio
+import whisper  # type: ignore
 
 # Constants
 CHUNK = 1024
@@ -69,12 +71,12 @@ def listen_to_pyaudio_input_device(input_device: Any):
     while True:
         data = stream.read(CHUNK)
         audio_np = np.frombuffer(data, dtype=np.int16)
-        print(f'np.max(audio_np) : {np.max(audio_np)}')
+        print(f'\rnp.max(audio_np) : {np.max(audio_np)}', end='', flush=True)
         if np.max(audio_np) > 100:
             audio_data.append(data)
             break
 
-    print('Listening...')
+    print('\nListening...')
     silence_count = 0
     while True:
         data = stream.read(CHUNK)
@@ -84,7 +86,7 @@ def listen_to_pyaudio_input_device(input_device: Any):
         audio_np = np.frombuffer(data, dtype=np.int16)
 
         # if audio amplitude falls below threshold, stop recording
-        print(f'np.max(audio_np) : {np.max(audio_np)}')
+        print(f'\rnp.max(audio_np) : {np.max(audio_np)}', end='', flush=True)
         if np.max(audio_np) < 100:
             silence_count += 1
             if silence_count > int(RATE / CHUNK):
@@ -92,7 +94,7 @@ def listen_to_pyaudio_input_device(input_device: Any):
         else:
             silence_count = 0
 
-    print("Finished listening.")
+    print("\nFinished listening.")
 
     stream.stop_stream()
     stream.close()
